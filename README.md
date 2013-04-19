@@ -18,7 +18,36 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+Add this rack application to your Rails routes:
+
+```ruby
+require 'popularity_contest/web'
+mount PopularityContest::Web, :at => "popularity"
+```
+
+You can now reach it from `HOSTNAME/popularity`.
+
+To use in your views you have a helper here:
+
+```ruby
+<%= count_hit_path('event', 1337) %>
+# /popularity/event/1337
+```
+
+Or if you have jQuery available you can use this:
+
+```ruby
+<%= count_hit_jquery('event', 1337) %>
+# <script>
+# (function(window, document, $, undefined) {
+#  $.ajax({
+#    url: '/popularity/event/1337',
+#    dataType: 'html',
+#    cache: false
+#  })
+# }(window, document, jQuery));
+# </script>
+```
 
 ## Contributing
 
