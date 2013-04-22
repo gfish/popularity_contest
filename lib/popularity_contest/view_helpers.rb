@@ -1,12 +1,6 @@
-  # Rails.application.routes.url_helpers.new_post_path
-  # => '/posts/new'
-
-  # Rails.application.routes.url_helpers.edit_person_url(@person, :host => 'server.com')
-  # => 'http://server.com/people/3/edit'
-
 module PopularityContest
   module ViewHelpers
-    def count_hit_path(content_type, content_id)
+    def popular_count_hit_path(content_type, content_id)
       begin
         build_path(content_type, content_id)
       rescue
@@ -14,7 +8,7 @@ module PopularityContest
       end
     end
 
-    def count_hit_jquery(content_type, content_id)
+    def popular_count_hit_jquery(content_type, content_id)
       begin
         url = build_path(content_type, content_id)
         <<-SJS
@@ -33,8 +27,21 @@ module PopularityContest
       end
     end
 
-    def most_viewed(content_type, limit=10, date = Date.today.strftime("%y-%m-%d"))
+    def popular_content(content_type, limit=10, date = Date.today.strftime("%y-%m-%d"))
+      begin
+        #try to guess a redis instance
+        if $redis.present?
+          redis = $redis
+        elsif @redis.present?
+          redis = @redis
+        else
+          raise 'Unable to find a usable redis instance'
+        end
 
+        return PopularityContest::most_popular(content_type, redis, 10)
+      rescue
+        []
+      end
     end
 
    private

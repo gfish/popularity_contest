@@ -27,53 +27,36 @@ module PopularityContest
 
       begin
         @redis = Redis.new(:host => uri.host, :port => uri.port, :password => uri.password)
-        puts "=> Statistics Redis connection success"
+        #puts "=> Statistics Redis connection success"
       rescue => e
         puts "=> Statistics Redis connection failure"
         puts e.backtrace
       end
     end
 
-    get '/pretty/:type' do
-      keys = @redis.keys(PopularityContest::key(params[:type], '*'))
+    # For testing what is in the DB
+    # get '/pretty/:type' do
+    #   PopularityContest::most_popular(params[:type], @redis, 10).to_json
+    # end
 
-      hits = @redis.pipelined do
-        keys.each do |key|
-          @redis.mget(key)
-        end
-      end.flatten.collect{|hit| hit.to_i }
-      # each of these hits is an array, flatten that
-      # and convert the hits to integer
-      # unfortunately Redis doesn't support the integer datatype as default
+    # For testing populating the keys
+    # get '/test' do
+    #   100.times do |event_id|
+    #     Random.rand(1...1000).times do |hits|
+    #       incr_key('event', event_id)
+    #     end
+    #   end
+    # end
 
-      # get all the content_ids
-      content_ids = keys.collect{|key| PopularityContest::content_id_from_key(key) }
-
-      # merge the three arrays: [keys, hits, content_ids]
-      # [ "popular:type:event:id:66:date:13-04-18:count",
-      #   "2",
-      #   1337 ]
-      # and sort them highest to lowest
-      content_hits = [keys, hits, content_ids].transpose.sort! { |x,y| y[1].to_i <=> x[1].to_i }
-      content_hits.to_json
-    end
-
+    # For incrementing a key:
     get '/:type/:id' do
       content_id = params[:id].to_i
       if(content_id != 0) # check if ID is present as an integer
         content_type :json
-        {:content => "#{params[:type]}##{content_id}"}.to_json
         incr_key(params[:type], content_id)
+        {:content => "#{params[:type]}##{content_id}"}.to_json
       else
         raise BadRequest, "invalid input format"
-      end
-    end
-
-    get '/test' do
-      100.times do |event_id|
-        Random.rand(1...1000).times do |hits|
-          incr_key('event', event_id)
-        end
       end
     end
 
