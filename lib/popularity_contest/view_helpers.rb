@@ -1,16 +1,16 @@
 module PopularityContest
   module ViewHelpers
-    def popular_count_hit_path(content_type, content_id)
+    def popular_count_hit_path(content_type, content_id, namespace = nil)
       begin
-        build_path(content_type, content_id)
+        build_path(content_type, content_id, namespace)
       rescue
         "<!-- error occurred in PopularityContest :| -->"
       end
     end
 
-    def popular_count_hit_jquery(content_type, content_id)
+    def popular_count_hit_jquery(content_type, content_id, namespace = nil)
       begin
-        url = build_path(content_type, content_id)
+        url = build_path(content_type, content_id, namespace)
         <<-SJS
 <script>
 (function(window, document, $, undefined) {
@@ -45,9 +45,15 @@ module PopularityContest
     end
 
    private
-    def build_path(content_type, content_id)
+    def build_path(content_type, content_id, namespace = nil)
       content_type = content_type.to_s.downcase
-      strip_locale_uri("#{Rails.application.routes.url_helpers.popularity_contest_web_path}/#{content_type}/#{content_id}")
+      uri = []
+      uri << "#{Rails.application.routes.url_helpers.popularity_contest_web_path}"
+      uri << "#{content_type}"
+      uri << "#{content_id}"
+      uri << "#{namespace}" unless namespace.nil?
+
+      strip_locale_uri(url.join("/"))
     end
     # Because Billetto have locales in URLs like billetto.dk/da and billetto.dk/en
     # and the paths returned from Rails will include those, and this route:
