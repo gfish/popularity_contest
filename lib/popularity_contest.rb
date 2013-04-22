@@ -4,8 +4,15 @@ module PopularityContest
 
  private
   # helpers
-  def self.key(content_type, content_id, date = Date.today.strftime("%y-%m-%d"))
-    "popular:type:#{content_type}:id:#{content_id}:date:#{date}:hits"
+  def self.key(content_type, content_id, namespace=nil, date = Date.today.strftime("%y-%m-%d"))
+    key = []
+    key << "popular"
+    key << "#{namespace}" unless namespace.nil?
+    key << "type:#{content_type}"
+    key << "id:#{content_id}"
+    key << "date:#{date}"
+    key << "hits"
+    key.join(":")
   end
 
   def self.content_id_from_key(key)
