@@ -24,7 +24,7 @@ module PopularityContest
       redis_url = redis_config[Rails.env]
       redis_url = "http://#{redis_url}"
       uri = URI.parse(redis_url)
-
+      puts "PopularityContest: Running in #{Sinatra::Base.environment} environment"
       begin
         @redis = Redis.new(:host => uri.host, :port => uri.port, :password => uri.password)
         #puts "=> Statistics Redis connection success"
@@ -78,6 +78,7 @@ module PopularityContest
     def incr_key(content_type, content_id, namespace=nil)
       @redis.multi do
         key = PopularityContest::key(content_type, content_id, namespace)
+        puts "PopularityContest: Incrementing key='#{key}'" if Sinatra::Base.development?
         @redis.incr(key)
         @redis.expire(key, 48*60*60) # each time we increment we expire 48 hours out in the future
       end

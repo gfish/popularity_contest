@@ -27,7 +27,7 @@ module PopularityContest
       end
     end
 
-    def popular_content(content_type, limit=10, date = Date.today.strftime("%y-%m-%d"))
+    def popular_content(content_type, limit=10, namespace=nil, date=Date.today.strftime("%y-%m-%d"))
       begin
         #try to guess a redis instance
         if $redis.present?
@@ -38,7 +38,7 @@ module PopularityContest
           raise 'Unable to find a usable redis instance'
         end
 
-        return PopularityContest::most_popular(content_type, redis, 10)
+        return PopularityContest::most_popular(content_type, redis, 10, namespace)
       rescue
         []
       end

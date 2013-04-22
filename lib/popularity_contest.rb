@@ -20,9 +20,9 @@ module PopularityContest
     key.scan(/id:(\d+)/i).flatten.first.to_i
   end
 
-  def self.most_popular(content_type, redis_connection, limit=10, date=Date.today.strftime("%y-%m-%d"))
+  def self.most_popular(content_type, redis_connection, limit=10, namespace=nil, date=Date.today.strftime("%y-%m-%d"))
       limit = 10 if limit.nil? || !limit.is_a?(Integer) # make sure limit is right, else default
-      keys = redis_connection.keys(PopularityContest::key(content_type, '*'))
+      keys = redis_connection.keys(PopularityContest::key(content_type, '*', namespace))
 
       hits = redis_connection.pipelined do
         keys.each do |key|
