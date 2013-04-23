@@ -1,16 +1,16 @@
 module PopularityContest
   module ViewHelpers
-    def popular_count_hit_path(content_type, content_id, namespace = nil)
+    def popular_count_hit_path(content_type, content_id)
       begin
-        build_path(content_type, content_id, namespace)
+        build_path(content_type, content_id)
       rescue
         "<!-- error occurred in PopularityContest :| -->"
       end
     end
 
-    def popular_count_hit_jquery(content_type, content_id, namespace = nil)
+    def popular_count_hit_jquery(content_type, content_id)
       begin
-        url = build_path(content_type, content_id, namespace)
+        url = build_path(content_type, content_id)
         <<-SJS
 <script>
 (function(window, document, $, undefined) {
@@ -27,7 +27,7 @@ module PopularityContest
       end
     end
 
-    def popular_content(content_type, limit=10, namespace=nil, date=Date.today.strftime("%y-%m-%d"))
+    def popular_content(content_type, limit=10, date=Date.today.strftime("%y-%m-%d"))
       begin
         #try to guess a redis instance
         if $redis.present?
@@ -38,22 +38,21 @@ module PopularityContest
           raise 'Unable to find a usable redis instance'
         end
 
-        return PopularityContest::most_popular(content_type, redis, 10, namespace)
+        return PopularityContest::most_popular(content_type, redis, 10)
       rescue
         []
       end
     end
 
    private
-    def build_path(content_type, content_id, namespace = nil)
+    def build_path(content_type, content_id)
       content_type = content_type.to_s.downcase
       uri = []
       uri << "#{Rails.application.routes.url_helpers.popularity_contest_web_path}"
       uri << "#{content_type}"
       uri << "#{content_id}"
-      uri << "#{namespace}" unless namespace.nil?
 
-      strip_locale_uri(url.join("/"))
+      strip_locale_uri(uri.join("/"))
     end
     # Because Billetto have locales in URLs like billetto.dk/da and billetto.dk/en
     # and the paths returned from Rails will include those, and this route:

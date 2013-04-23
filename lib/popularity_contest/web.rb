@@ -60,24 +60,11 @@ module PopularityContest
       end
     end
 
-    # For incrementing a key with a namespace, stupid duplication because of Sinatra routing
-    # not supporting optional named parameters
-    get '/:type/:id/:namespace' do
-      content_id = params[:id].to_i
-      if(content_id != 0) # check if ID is present as an integer
-        content_type :json
-        incr_key(params[:type], content_id, params[:namespace])
-        {:content => "#{params[:type]}##{content_id}"}.to_json
-      else
-        raise BadRequest, "invalid input format"
-      end
-    end
-
    private
     # Redis-helpers
-    def incr_key(content_type, content_id, namespace=nil)
+    def incr_key(content_type, content_id)
       @redis.multi do
-        key = PopularityContest::key(content_type, content_id, namespace)
+        key = PopularityContest::key(content_type, content_id)
         puts "PopularityContest: Incrementing key='#{key}'" if Sinatra::Base.development?
         @redis.incr(key)
         @redis.expire(key, 48*60*60) # each time we increment we expire 48 hours out in the future
