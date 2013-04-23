@@ -38,7 +38,7 @@ module PopularityContest
           raise 'Unable to find a usable redis instance'
         end
 
-        return PopularityContest::most_popular(content_type, redis, 10)
+        return PopularityContest::most_popular(content_type, redis, limit)
       rescue
         []
       end
