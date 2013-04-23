@@ -1,7 +1,5 @@
 # PopularityContest
 
-TODO: Write a gem description
-
 ## Installation
 
 Add this line to your application's Gemfile:
@@ -30,14 +28,14 @@ You can now reach it from `HOSTNAME/popularity`.
 To use in your views you have a helper here:
 
 ```ruby
-<%= count_hit_path('event', 1337) %>
+<%= popular_count_hit_path('event', 1337) %>
 # /popularity/event/1337
 ```
 
 Or if you have jQuery available you can use this:
 
 ```ruby
-<%= count_hit_jquery('event', 1337) %>
+<%= popular_count_hit_jquery('event', 1337) %>
 # <script>
 # (function(window, document, $, undefined) {
 #  $.ajax({
