@@ -33,7 +33,9 @@ module PopularityContest
       # unfortunately Redis doesn't support the integer datatype as default
 
       # get all the content_ids
+      # TODO: Do this after sorting
       content_ids = keys.collect{|key| PopularityContest::content_id_from_key(key) }
+
 
       # merge the three arrays: [keys, hits, content_ids]
       # [ "popular:type:event:id:66:date:13-04-18:count",
