@@ -54,7 +54,7 @@ module PopularityContest
       if(content_id != 0) # check if ID is present as an integer
         content_type :json
         incr_key(params[:type], content_id)
-        {:content => "#{params[:type]}##{content_id}"}.to_json
+        {:content => "#{params[:type]}##{content_id}", :key => PopularityContest::key(params[:type], content_id)}.to_json
       else
         raise BadRequest, "invalid input format"
       end
