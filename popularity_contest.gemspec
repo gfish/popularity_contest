@@ -4,7 +4,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 Gem::Specification.new do |spec|
   spec.name          = "popularity_contest"
-  spec.version       = "0.0.2"
+  spec.version       = "0.0.3"
   spec.authors       = ["Kasper Grubbe"]
   spec.email         = ["kawsper@gmail.com"]
   spec.description   = "A Rack application to count and sort popular content on our websites"
