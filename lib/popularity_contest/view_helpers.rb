@@ -60,7 +60,7 @@ module PopularityContest
     # will only bind on: billetto.dk/hit/our/app
     # and not:           billetto.dk/en/hit/our/app
     def strip_locale_uri(path)
-      path.to_s.gsub(/\/(en|da)/i, "")
+      path.to_s.gsub(/\/(en|da|no|sv)/i, "")
     end
   end
 end
