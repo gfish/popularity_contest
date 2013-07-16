@@ -29,16 +29,15 @@ module PopularityContest
 
     def popular_content(content_type, limit=10, date=Date.today.strftime("%y-%m-%d"))
       begin
-        #try to guess a redis instance
-        if $redis.present?
-          redis = $redis
-        elsif @redis.present?
-          redis = @redis
-        else
-          raise 'Unable to find a usable redis instance'
-        end
+        PopularityContest::most_popular(content_type, redis_connection, limit)
+      rescue
+        []
+      end
+    end
 
-        return PopularityContest::most_popular(content_type, redis, limit)
+    def all_popular_content(content_type)
+      begin
+        PopularityContest::all_popular(content_type, redis_connection)
       rescue
         []
       end
@@ -61,6 +60,16 @@ module PopularityContest
     # and not:           billetto.dk/en/hit/our/app
     def strip_locale_uri(path)
       path.to_s.gsub(/\/(en|da|no|sv)/i, "")
+    end
+
+    def redis_connection
+      if $redis.present?
+        redis = $redis
+      elsif @redis.present?
+        redis = @redis
+      else
+        raise 'Unable to find a usable redis instance'
+      end
     end
   end
 end
