@@ -1,7 +1,5 @@
 require "bundler/gem_tasks"
-require 'rake/testtask'
 
-Rake::TestTask.new do |t|
-  t.pattern = "test/*_test.rb"
-  t.libs << "lib"
-end
+require 'rspec/core/rake_task'
+
+RSpec::Core::RakeTask.new(:spec)
