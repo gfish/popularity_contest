@@ -20,17 +20,12 @@ module PopularityContest
     def initialize(app = nil)
       super
       @app = app
-      redis_config = YAML.load_file(File.join(Rails.root, "/config/resque.yml"))
-      redis_url = redis_config[Rails.env]
-      redis_url = "http://#{redis_url}"
-      uri = URI.parse(redis_url)
-      puts "PopularityContest: Running in #{Sinatra::Base.environment} environment"
-      begin
-        @redis = Redis.new(:host => uri.host, :port => uri.port, :password => uri.password)
-        #puts "=> Statistics Redis connection success"
-      rescue => e
+      @redis = $redis
+
+      if @redis
+        puts "PopularityContest: Running in #{Sinatra::Base.environment} environment"
+      else
         puts "=> Statistics Redis connection failure"
-        puts e.backtrace
       end
     end
 
