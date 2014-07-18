@@ -55,7 +55,12 @@ module PopularityContest
       end
     end
 
-   private
+    options '/:type/:id' do
+      headers cors_headers_list
+      halt
+    end
+
+    private
     # Redis-helpers
     def incr_key(content_type, content_id)
       @redis.multi do
@@ -75,6 +80,15 @@ module PopularityContest
 
       {:error => message}.to_json
     end
+
+    def cors_headers_list
+     {
+       'Access-Control-Allow-Origin' => '*',
+       'Access-Control-Allow-Methods' => %w(GET OPTIONS).join(', '),
+       'Access-Control-Allow-Headers' => %w{Origin Accept Content-Type X-Requested-With X-CSRF-Token}.join(', '),
+     }
+    end
+
     error BadRequest do
       e = env['sinatra.error']
       error(500, e.message)
