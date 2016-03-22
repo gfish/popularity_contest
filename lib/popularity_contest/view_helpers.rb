@@ -13,7 +13,7 @@ module PopularityContest
         url = build_path(content_type, content_id)
         <<-SJS
 <script>
-if (jQuery)
+if (jQuery) {
   (function(window, document, $, undefined) {
     $.ajax({
       url: '#{url}',
@@ -21,7 +21,7 @@ if (jQuery)
       cache: false
     })
   }(window, document, jQuery));
-)
+}
 </script>
         SJS
       rescue
