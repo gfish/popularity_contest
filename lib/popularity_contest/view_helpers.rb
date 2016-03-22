@@ -21,6 +21,8 @@ if (typeof jQuery !== 'undefined') {
       cache: false
     })
   }(window, document, jQuery));
+} else {
+  console.warn("jQuery is not defined, the `popularity_contest` will not work");
 }
 </script>
         SJS
