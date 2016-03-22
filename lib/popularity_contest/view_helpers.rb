@@ -13,7 +13,7 @@ module PopularityContest
         url = build_path(content_type, content_id)
         <<-SJS
 <script>
-if (jQuery) {
+if (typeof jQuery !== 'undefined') {
   (function(window, document, $, undefined) {
     $.ajax({
       url: '#{url}',
