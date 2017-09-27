@@ -25,7 +25,11 @@ module PopularityContest
   end
 
   def self.all_popular(content_type, redis_connection)
-    keys = redis_connection.keys(PopularityContest::key(content_type, '*'))
+    cursor, keys = 0, []
+    while cursor != "0"
+      cursor, new_keys = redis_connection.scan(cursor, match: PopularityContest::key(content_type, '*'))
+      keys += Array(new_keys)
+    end
 
     hits = redis_connection.pipelined do
       keys.each do |key|
